@@ -271,10 +271,16 @@ export default class BarPage extends Component {
             <Text style={styles.line_and_cover_text}>
               Special event: {barmessage.message}
             </Text>
+            <Text style={styles.line_and_cover_text}>
+              Approx wait is: {lineLength[0][bar_data.line]}
+            </Text>
+            <Text style={styles.line_and_cover_text}>
+              The cover charge is ${bar_data.coverCharge}
+            </Text>
           </View>
         )
       }
-      else {
+      else if (!barmessage.available) {
         closed = (
           <View style={styles.line_and_cover}>
             <Text style={styles.line_and_cover_text}>
