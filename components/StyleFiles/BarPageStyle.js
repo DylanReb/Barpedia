@@ -54,6 +54,29 @@ const styles = StyleSheet.create({
       color: 'black',
       fontWeight: "bold",
     },
+    message_view: {
+      backgroundColor: '#FFFFFF',
+      borderRadius: 20,
+      marginLeft: 5,
+      marginRight: 5,
+      alignItems: "center",
+      alignContent: "center",
+      height: 100,
+    },
+    message_header_text: {
+      fontSize: 20,
+      margin: 5,
+      textAlign: "center",
+      color: '#0696E9',
+      fontWeight: "bold",
+    },
+    message_text: {
+      fontSize: 16,
+      margin: 5,
+      textAlign: "center",
+      color: 'black',
+      fontWeight: "bold",
+    },
     accordion: {
       width: windowWidth - 5,
       marginTop: 5,
@@ -91,7 +114,7 @@ const styles = StyleSheet.create({
       marginTop: 3,
     },
     title: {
-      fontSize: 32,
+      fontSize: 28,
       color: "white",
     },
     drinksTile: {
@@ -107,15 +130,16 @@ const styles = StyleSheet.create({
       color: 'white',
     },
     logo: {
-      width: windowWidth - 40,
-      height: 200,
-      marginLeft: 20,
+      width: windowWidth / 2,
+      height: 150,
+      marginLeft: windowWidth / 4,
     },
     hours: {
       backgroundColor: "whitesmoke",
       flex: 1,
       alignItems: "center",
       justifyContent: "center",
+      padding: 24,
     },
     hours_title: {
       fontSize: 18,
