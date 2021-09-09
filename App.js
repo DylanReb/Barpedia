@@ -10,18 +10,19 @@ import Reviews from "./components/Reviews.js";
 
 import { Icon } from "native-base";
 
+import { LogBox } from "react-native";
 
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+LogBox.ignoreAllLogs();
+
 const Tab = createBottomTabNavigator();
 
 
 import styles from "./components/StyleFiles/BarPageStyle.js";
 
 const { Navigator, Screen } = createStackNavigator();
-
-console.disableYellowBox = true;
 
 export default function App() {
   return (
