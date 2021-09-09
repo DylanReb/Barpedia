@@ -8,6 +8,8 @@ import {
   ScrollView,
 } from "react-native";
 
+import DraggableFlatList from 'react-native-draggable-dynamic-flatlist';
+
 import styles from "./StyleFiles/BarMenuClassStyle"
 import BarCard from "./BarCard.js";
 import logo from "../assets/Barpedia_logo.png";
@@ -46,26 +48,30 @@ export default class App extends React.Component {
     this._unsubscribe();
   }
 
-  renderItem = (data) => (
-    <BarCard
-      key={data.item.id}
-      barName={data.item.name}
-      barCoverCharge={data.item.coverCharge}
-      barPic={data.item.pic_name}
-      barLine={data.item.line}
-      onPress={() =>
-        this.props.navigation.navigate("Details", {
-          name: data.item.name,
-          description: data.item.description,
-          barPic: data.item.pic_name,
-          coverCharge: data.item.coverCharge,
-          line: data.item.line,
-          id: data.item.id,
-          listenerprop: Date().toLocaleUpperCase(),
-        })
-      }
-    />
-  );
+  renderItem = ({ item, index, move, moveEnd, isActive }) => {
+    return (
+      <BarCard
+        key={item.id}
+        barName={item.name}
+        barCoverCharge={item.coverCharge}
+        barPic={item.pic_name}
+        barLine={item.line}
+        onLongPress={move}
+        onPressOut={moveEnd}
+        onPress={() =>
+          this.props.navigation.navigate("Details", {
+            name: item.name,
+            description: item.description,
+            barPic: item.pic_name,
+            coverCharge: item.coverCharge,
+            line: item.line,
+            id: item.id,
+            listenerprop: Date().toLocaleUpperCase(),
+          })
+        }
+      />
+    )  
+  }
   render() {
     if (this.state.loading) {
       return (
@@ -75,19 +81,15 @@ export default class App extends React.Component {
       );
     }
     return (
-      <ScrollView>
         <View style={styles.container}>
-          <FlatList
+          <DraggableFlatList
             data={this.state.dataSource}
-            renderItem={(item) => this.renderItem(item)}
+            renderItem={this.renderItem}
             keyExtractor={(item) => item.id.toString()}
+            scrollPercent={10}
+            onMoveEnd={({ data }) => this.setState({ data })}
           />
         </View>
-        <Image style={styles.logo} source={logo}></Image>
-        <View style={styles.comments}>
-          <Text>Feedback? Email us at barpediaapp@gmail.com</Text>
-        </View>
-      </ScrollView>
     );
   }
 }

@@ -17,6 +17,8 @@ export default function BarCard({
   barLine,
   barCoverCharge,
   onPress = (f) => f,
+  onLongPress = (f) => f,
+  onPressOut = (f) => f,
 }) {
   const bar_link = picture_linker.getBarLink(barPic);
   var coverIcon;
@@ -66,6 +68,8 @@ export default function BarCard({
       <TouchableHighlight
         style={styles.barTab}
         onPress={() => onPress()}
+        onLongPress={() => onLongPress()}
+        onPressOut={() => onPressOut()}
         underlayColor="white"
       >
         <ImageBackground style={styles.image} imageStyle={{borderRadius:12}} source={bar_link}>
