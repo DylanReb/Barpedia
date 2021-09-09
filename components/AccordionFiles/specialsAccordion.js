@@ -1,3 +1,4 @@
+
 import React from "react";
 import { StyleSheet, Text, View, FlatList, Dimensions } from "react-native";
 import Constants from "expo-constants";
@@ -85,7 +86,7 @@ export default function EventsSpecials({ name, data }) {
 const styles = StyleSheet.create({
   container: {
     marginHorizontal: 10,
-    paddingHorizontal: 5
+    paddingHorizontal: 5,
   },
   container2: {
     marginHorizontal: 10,
