@@ -124,9 +124,11 @@ export default class Ratings extends Component {
 
 const styles = StyleSheet.create({
     circles: {
+        marginVertical: 24,
         flex: 1,
         flexDirection: "row",
         flexWrap: "wrap",
+        justifyContent: 'center'
     },
     individual: {
         flexDirection: "column",

@@ -65,9 +65,9 @@ export default function Timer({ barName, lineLeap, Review, onPress = (f) => f })
     button = <Button disabled title="Cannot Report for Line Leap"></Button>;
   }
   else if (Review == "0" && Linediff > 60000) {
-    button = <Button title={activeText} onPress={() => onPress()} color='#E50000'></Button>;
+    button = <Button title={activeText} onPress={() => onPress()} color='#0696E9'></Button>;
   } else if (Review == "1" && Reviewdiff > 60000) {
-    button = <Button title={activeText} onPress={() => onPress()} color='#E50000'></Button>;
+    button = <Button title={activeText} onPress={() => onPress()} color='#0696E9'></Button>;
   } else {
     button = <Button disabled title="Already Submitted"></Button>;
   }

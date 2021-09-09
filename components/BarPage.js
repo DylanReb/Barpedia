@@ -106,8 +106,8 @@ export default class BarPage extends Component {
         alignItems: "center",
         backgroundColor: "#FFF",
         borderRadius: 10,
-        marginHorizontal: 5
-      }}>
+        height: 50,
+        marginHorizontal: 5 }}>
         <Text style={{ fontWeight: "600" }}>
           Daily Specials
         </Text>
@@ -131,8 +131,8 @@ export default class BarPage extends Component {
         alignItems: "center",
         backgroundColor: "#FFF",
         borderRadius: 10,
-        marginHorizontal: 5
-      }}>
+        height: 50,
+        marginHorizontal: 5  }}>
         <Text style={{ fontWeight: "600" }}>
           All Day Everyday
         </Text>
@@ -156,8 +156,8 @@ export default class BarPage extends Component {
         alignItems: "center",
         backgroundColor: "#FFF",
         borderRadius: 10,
-        marginHorizontal: 5
-      }}>
+        height: 50,
+        marginHorizontal: 5  }}>
         <Text style={{ fontWeight: "600" }}>
           Happy Hours
         </Text>
@@ -181,8 +181,9 @@ export default class BarPage extends Component {
         alignItems: "center",
         backgroundColor: "#FFF",
         borderRadius: 10,
-        marginHorizontal: 5
-      }}>
+
+        height: 50,
+        marginHorizontal: 5  }}>
         <Text style={{ fontWeight: "600" }}>
           Entertainment
         </Text>
@@ -423,7 +424,7 @@ export default class BarPage extends Component {
               Sunday: {bar_data.hours.Sunday}
             </Text>
           </View>
-          <Image style={styles.logo} source={logo}></Image>
+          <Image style={styles.logo} source={logo} resizeMode="contain"></Image>
         </ScrollView>
       </>
     );
