@@ -266,7 +266,6 @@ export default class BarPage extends Component {
       )
     }
     else if (!bar_data.closed) {
-      console.log(bar_data.coverCharge);
       closed = (
           <View style={styles.line_and_cover}>
             <Text style={styles.line_and_cover_text}>
@@ -288,7 +287,6 @@ export default class BarPage extends Component {
       )
     }
     if (barmessage.available) {
-      console.log(barmessage.message);
       message = (
         <View style={styles.message_view}>
           <Text style={styles.message_header_text}>
