@@ -254,6 +254,7 @@ export default class BarPage extends Component {
 
     const canReportLine = true;
     var closed;
+    var message;
     var button;
     if (bar_data.lineleap) {
       closed = (
@@ -265,23 +266,8 @@ export default class BarPage extends Component {
       )
     }
     else if (!bar_data.closed) {
-      if (barmessage.available) {
-        closed = (
-          <View style={styles.line_and_cover}>
-            <Text style={styles.line_and_cover_text}>
-              Special event: {barmessage.message}
-            </Text>
-            <Text style={styles.line_and_cover_text}>
-              Approx wait is: {lineLength[0][bar_data.line]}
-            </Text>
-            <Text style={styles.line_and_cover_text}>
-              The cover charge is ${bar_data.coverCharge}
-            </Text>
-          </View>
-        )
-      }
-      else if (!barmessage.available) {
-        closed = (
+      console.log(bar_data.coverCharge);
+      closed = (
           <View style={styles.line_and_cover}>
             <Text style={styles.line_and_cover_text}>
               Approx wait is: {lineLength[0][bar_data.line]}
@@ -292,12 +278,24 @@ export default class BarPage extends Component {
           </View>
         )
       }
-    }
     else if (bar_data.closed) {
       closed = (
         <View style={styles.line_and_cover}>
           <Text style={styles.line_and_cover_text}>
             This bar is currently closed
+          </Text>
+        </View>
+      )
+    }
+    if (barmessage.available) {
+      console.log(barmessage.message);
+      message = (
+        <View style={styles.message_view}>
+          <Text style={styles.message_header_text}>
+            Special Message
+          </Text>  
+          <Text style={styles.message_text}>
+            {barmessage.message}
           </Text>
         </View>
       )
@@ -337,6 +335,7 @@ export default class BarPage extends Component {
               })
             }
           ></Timer>
+          {message}
           {closed}
           <Accordion
             expanded={[]}
