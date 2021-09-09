@@ -6,7 +6,7 @@ import {
   ActivityIndicator,
   ScrollView,
   Text,
-  View, 
+  View,
   TouchableHighlight,
 } from "react-native";
 import { Icon } from "native-base";
@@ -55,18 +55,20 @@ export default class BarPage extends Component {
       fetch("https://barpedia.herokuapp.com/api/everyday/").then((response) => response.json()),
       fetch("https://barpedia.herokuapp.com/api/entertainment/").then((response) => response.json()),
       fetch("https://barpedia.herokuapp.com/api/happyhour/").then((response) => response.json()),
-      fetch("https://barpedia.herokuapp.com/api/specials/").then((response) => response.json())
-    ]).then(([responseData1, responseData2, responseData3, responseData4, responseData5]) => {
+      fetch("https://barpedia.herokuapp.com/api/specials/").then((response) => response.json()),
+      fetch("https://barpedia.herokuapp.com/api/messages/").then((response) => response.json())
+    ]).then(([responseData1, responseData2, responseData3, responseData4, responseData5, responseData6]) => {
       this.setState({
         dataSource: responseData1,
         everydaySource: responseData2,
         entertainSource: responseData3,
         happySource: responseData4,
         specialSource: responseData5,
+        messageSource: responseData6,
         loading: false
       });
     })
-    .catch((error) => console.log(error)); //to catch the errors if any
+      .catch((error) => console.log(error)); //to catch the errors if any
   }
 
   componentDidUpdate() {
@@ -101,7 +103,7 @@ export default class BarPage extends Component {
         flexDirection: "row",
         padding: 10,
         justifyContent: "space-between",
-        alignItems: "center" ,
+        alignItems: "center",
         backgroundColor: "#FFF",
         borderRadius: 10,
         height: 50,
@@ -126,7 +128,7 @@ export default class BarPage extends Component {
         flexDirection: "row",
         padding: 10,
         justifyContent: "space-between",
-        alignItems: "center" ,
+        alignItems: "center",
         backgroundColor: "#FFF",
         borderRadius: 10,
         height: 50,
@@ -139,7 +141,7 @@ export default class BarPage extends Component {
           : <Icon type="AntDesign" style={{ fontSize: 18 }} name="down" />}
       </View>
     );
-  }  
+  }
 
   _renderHappyHour = (item) => {
     return <HappyHour name={this.state.barName} data={this.state.happySource}></HappyHour>;
@@ -151,7 +153,7 @@ export default class BarPage extends Component {
         flexDirection: "row",
         padding: 10,
         justifyContent: "space-between",
-        alignItems: "center" ,
+        alignItems: "center",
         backgroundColor: "#FFF",
         borderRadius: 10,
         height: 50,
@@ -176,9 +178,10 @@ export default class BarPage extends Component {
         flexDirection: "row",
         padding: 10,
         justifyContent: "space-between",
-        alignItems: "center" ,
+        alignItems: "center",
         backgroundColor: "#FFF",
         borderRadius: 10,
+
         height: 50,
         marginHorizontal: 5  }}>
         <Text style={{ fontWeight: "600" }}>
@@ -212,6 +215,9 @@ export default class BarPage extends Component {
       return element.name === this.state.barName;
     });
     const barhappy = this.state.happySource.find((element) => {
+      return element.name === this.state.barName;
+    });
+    const barmessage = this.state.messageSource.find((element) => {
       return element.name === this.state.barName;
     });
     const barpic = this.props.route.params.barPic;
@@ -249,6 +255,7 @@ export default class BarPage extends Component {
 
     const canReportLine = true;
     var closed;
+    var message;
     var button;
     if (bar_data.lineleap) {
       closed = (
@@ -261,16 +268,16 @@ export default class BarPage extends Component {
     }
     else if (!bar_data.closed) {
       closed = (
-        <View style={styles.line_and_cover}>
-          <Text style={styles.line_and_cover_text}>
-            Approx wait is: {lineLength[0][bar_data.line]}
-          </Text>
-          <Text style={styles.line_and_cover_text}>
-            The cover charge is ${bar_data.coverCharge}
-          </Text>
-        </View>
-      )
-    }
+          <View style={styles.line_and_cover}>
+            <Text style={styles.line_and_cover_text}>
+              Approx wait is: {lineLength[0][bar_data.line]}
+            </Text>
+            <Text style={styles.line_and_cover_text}>
+              The cover charge is ${bar_data.coverCharge}
+            </Text>
+          </View>
+        )
+      }
     else if (bar_data.closed) {
       closed = (
         <View style={styles.line_and_cover}>
@@ -280,22 +287,34 @@ export default class BarPage extends Component {
         </View>
       )
     }
+    if (barmessage.available) {
+      message = (
+        <View style={styles.message_view}>
+          <Text style={styles.message_header_text}>
+            Special Message
+          </Text>  
+          <Text style={styles.message_text}>
+            {barmessage.message}
+          </Text>
+        </View>
+      )
+    }
     return (
       <>
         <ScrollView style={styles.scroll} scrollIndicatorInsets={{ right: 1 }}>
           <View style={styles.box}>
-            <ImageBackground style={styles.pageImage} imageStyle={{borderRadius: 15}} source={bar_link}>
-              <View style={styles.titleBox}>  
+            <ImageBackground style={styles.pageImage} imageStyle={{ borderRadius: 15 }} source={bar_link}>
+              <View style={styles.titleBox}>
                 <Text style={styles.barTitle}>
                   {this.props.route.params.name}
                 </Text>
-              </View>  
+              </View>
             </ImageBackground>
           </View>
           <Timer
             barName={this.props.route.params.name}
-            lineLeap = {bar_data.lineleap}
-            Review = "0"
+            lineLeap={bar_data.lineleap}
+            Review="0"
             onPress={() =>
               this.props.navigation.navigate("Line Reporting", {
                 name: this.props.route.params.name,
@@ -306,15 +325,16 @@ export default class BarPage extends Component {
           ></Timer>
           <Timer
             barName={this.props.route.params.name}
-            lineLeap = {bar_data.lineleap}
-            Review = "1"
-              onPress={() =>
-                this.props.navigation.navigate("Reviews", {
-                  name: this.props.route.params.name,
-                  id: this.props.route.params.id,
-                })
-              }
-            ></Timer>
+            lineLeap={bar_data.lineleap}
+            Review="1"
+            onPress={() =>
+              this.props.navigation.navigate("Reviews", {
+                name: this.props.route.params.name,
+                id: this.props.route.params.id,
+              })
+            }
+          ></Timer>
+          {message}
           {closed}
           <Accordion
             expanded={[]}
@@ -330,7 +350,7 @@ export default class BarPage extends Component {
             renderHeader={this._renderEnterHeader}
             style={styles.accordion}
             headerStyle={styles.accordionHeader}
-            expanded={[]} 
+            expanded={[]}
           ></Accordion>
           <Accordion
             dataArray={everydayArray}
@@ -338,7 +358,7 @@ export default class BarPage extends Component {
             headerStyle={styles.accordionHeader}
             renderContent={this._renderEveryday}
             renderHeader={this._renderEveryHeader}
-            expanded={[]} 
+            expanded={[]}
           ></Accordion>
           <Accordion
             dataArray={happyArray}
@@ -346,7 +366,7 @@ export default class BarPage extends Component {
             headerStyle={styles.accordionHeader}
             renderContent={this._renderHappyHour}
             renderHeader={this._renderHappyHeader}
-            expanded={[]} 
+            expanded={[]}
           ></Accordion>
           <Ratings
             barId={bar_data.id}>
