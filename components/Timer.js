@@ -67,7 +67,7 @@ export default function Timer({ barName, lineLeap, Review, onPress = (f) => f })
   else if (Review == "0" && Linediff > 60000) {
     button = <Button title={activeText} onPress={() => onPress()} color='#0696E9'></Button>;
   } else if (Review == "1" && Reviewdiff > 60000) {
-    button = <Button title={activeText} onPress={() => onPress()} color='#0696E9'></Button>;
+    button = <Button title={activeText} onPress={() => onPress()} color='#0696E9' style={styles.button}></Button>;
   } else {
     button = <Button disabled title="Already Submitted"></Button>;
   }
@@ -81,5 +81,7 @@ const styles = StyleSheet.create({
   },
   button: {
     margin: 5,
+    borderWidth: 2,
+    borderRadius: 5
   },
 });
