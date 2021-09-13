@@ -3,23 +3,21 @@ import {
   Text,
   View,
   ActivityIndicator,
-  TouchableOpacity,
-  TouchableHighlight,
   ImageBackground,
   FlatList,
   Image,
   ScrollView,
+  AsyncStorage,
 } from "react-native";
 
-import DraggableFlatList from 'react-native-draggable-dynamic-flatlist';
+import DraggableFlatList from "react-native-draggable-flatlist";
+//import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import styles from "./StyleFiles/BarMenuClassStyle";
-import styles2 from "./StyleFiles/BarCardStyle";
 import picture_linker from "./PictureLinkers/picture_linker";
 import BarCard from "./BarCard.js";
 import logo from "../assets/Barpedia_logo.png";
-
-
+import bars from "../data/bars.json";
 
 
 export default class App extends React.Component {
@@ -27,7 +25,8 @@ export default class App extends React.Component {
     super(props);
     this.state = {
       loading: true,
-      data: [],
+      data: bars,
+      fetched: [],
       refresh: 0,
       data_example: [
         {
@@ -47,18 +46,21 @@ export default class App extends React.Component {
   }
 
   refreshData() {
+    console.log("refreshing")
     fetch("https://barpedia.herokuapp.com/api/bars/")
       .then((response) => response.json())
       .then((responseData) => {
         this.setState({
           loading: false,
-          data: responseData,
+          fetched: responseData,
         });
       })
       .catch((error) => console.log(error)); //to catch the errors if any
   }
 
   componentDidMount() {
+    console.log("MOUNTING")
+    this.getData()
     this._unsubscribe = this.props.navigation.addListener('focus', () => {
       this.refreshData();
     });
@@ -69,44 +71,20 @@ export default class App extends React.Component {
     this._unsubscribe();
   }
 
-  /*
-  renderItem = ({ item, index, move, moveEnd, isActive }) => {
-    const bar_link = picture_linker.getBarLink(item.pic_name);
-    return(
-      <TouchableHighlight
-        style={styles2.barTab}
-        onPress={() => onPress()}
-        onLongPress={move}
-        onPressOut={moveEnd}
-        underlayColor="white"
-      >
-        <ImageBackground style={styles2.image} imageStyle={{borderRadius:12}} source={bar_link}>
-          <View style={styles2.nameBox}>
-            <Text style={styles2.barName}>{item.name}</Text>
-          </View>
-        </ImageBackground>
-      </TouchableHighlight>
-    );
-  }
-  */
 
-  renderItem = ({ item, index, move, moveEnd, isActive }) => {
+  renderItem = ({ item, index, drag, isActive }) => {
     return (
       <BarCard
         key={item.id}
+        barData={this.state.fetched}
         barName={item.name}
-        barCoverCharge={item.coverCharge}
         barPic={item.pic_name}
-        barLine={item.line}
-        onLongPress={move}
-        onPressOut={moveEnd}
+        onLongPress={drag}
         onPress={() =>
           this.props.navigation.navigate("Details", {
+            barData: this.state.fetched,
             name: item.name,
-            description: item.description,
             barPic: item.pic_name,
-            coverCharge: item.coverCharge,
-            line: item.line,
             id: item.id,
             listenerprop: Date().toLocaleUpperCase(),
           })
@@ -114,27 +92,39 @@ export default class App extends React.Component {
       />
     )  
   }
-  /*
-  renderColor = ({ item, index, move, moveEnd, isActive }) => {
-    return (
-      <TouchableOpacity
-        style={{ 
-          height: 100, 
-          backgroundColor: isActive ? 'blue' : item.backgroundColor,
-          alignItems: 'center', 
-          justifyContent: 'center' 
-        }}
-        onLongPress={move}
-        onPressOut={moveEnd}>
-        <Text style={{ 
-          fontWeight: 'bold', 
-          color: 'white',
-          fontSize: 32,
-        }}>{item.label}</Text>
-      </TouchableOpacity>
-    )
+
+  storeData = async (value) => {
+    try {
+      console.log("STORING", value);
+      const jsonValue = JSON.stringify(value)
+      await AsyncStorage.setItem('@storage_Key', jsonValue)
+    } catch (e) {
+       console.log("error", e)
+    }
   }
-*/
+
+  
+  getData = async () => {
+    console.log("getting")
+    try {
+      var jsonValue = await AsyncStorage.getItem('@storage_Key')
+      jsonValue = JSON.parse(jsonValue)
+      console.log("RETURNING", jsonValue)
+      this.setState({ data: jsonValue })
+      //return jsonValue != null ? JSON.parse(jsonValue) : null;
+    } catch(e) {
+       console.log("error", e)
+    }
+  }
+
+  
+  dragEnd(data) {
+    var test = [];
+    this.state.data = this.setState({ data });
+    this.storeData(data);
+
+  }
+
   render() {
     if (this.state.loading) {
       return (
@@ -142,10 +132,11 @@ export default class App extends React.Component {
           <ActivityIndicator size="large" color="#0c9" />
         </View>
       );
-    }
-    //console.log(Date().toLocaleLowerCase())
-    //console.log(this.state.data_test);
-    //console.log(this.state.data);
+    } 
+    console.log("HERERERE")
+    //console.log(this.state.data)
+    //console.log(this.getData());
+    console.log(this.state.data)
     return (
         <View style={styles.container}>
           <DraggableFlatList
@@ -153,7 +144,7 @@ export default class App extends React.Component {
             renderItem={this.renderItem}
             keyExtractor={(item) => item.id.toString()}
             scrollPercent={10}
-            onMoveEnd={({ data }) => this.setState({ data })}
+            onDragEnd={({ data }) => this.dragEnd(data)}
           />
         </View>
     );

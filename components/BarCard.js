@@ -11,25 +11,26 @@ import picture_linker from "./PictureLinkers/picture_linker";
 import styles from "./StyleFiles/BarCardStyle.js";
 
 export default function BarCard({
+  barData,
   barName,
-  barDescription,
   barPic,
-  barLine,
-  barCoverCharge,
   onPress = (f) => f,
   onLongPress = (f) => f,
-  onPressOut = (f) => f,
 }) {
   const bar_link = picture_linker.getBarLink(barPic);
+  const bar_data = barData.find((element) => {
+    return element.name === barName;
+  });
   var coverIcon;
-  if(barCoverCharge > 0){
+  if(bar_data.coverCharge > 0){
     coverIcon = <Icon name="dollar" type="FontAwesome" style={styles.icon}></Icon>
   }
-  if (barLine == 1) {
+  if (bar_data.line == 1) {
     return (
       <TouchableHighlight
         style={styles.barTab}
         onPress={() => onPress()}
+        onLongPress={() => onLongPress()}
         underlayColor="white"
       >
         <ImageBackground style={styles.image} imageStyle={{borderRadius:12}} source={bar_link}>
@@ -43,11 +44,12 @@ export default function BarCard({
         </ImageBackground>
       </TouchableHighlight>
     );
-  } else if (barLine == 2) {
+  } else if (bar_data.line == 2) {
     return (
       <TouchableHighlight
         style={styles.barTab}
         onPress={() => onPress()}
+        onLongPress={() => onLongPress()}
         underlayColor="white"
       >
         <ImageBackground style={styles.image} imageStyle={{borderRadius:12}} source={bar_link}>
@@ -63,13 +65,12 @@ export default function BarCard({
       </TouchableHighlight>
     );
   } 
-  else if (barLine == 0){
+  else if (bar_data.line == 0){
     return(
       <TouchableHighlight
         style={styles.barTab}
         onPress={() => onPress()}
         onLongPress={() => onLongPress()}
-        onPressOut={() => onPressOut()}
         underlayColor="white"
       >
         <ImageBackground style={styles.image} imageStyle={{borderRadius:12}} source={bar_link}>
@@ -83,11 +84,12 @@ export default function BarCard({
       </TouchableHighlight>
     );
   }
-  else if (barLine == 3) {
+  else if (bar_data.line == 3) {
     return (
       <TouchableHighlight
         style={styles.barTab}
         onPress={() => onPress()}
+        onLongPress={() => onLongPress()}
         underlayColor="white"
       >
         <ImageBackground style={styles.image} imageStyle={{borderRadius:12}} source={bar_link}>
