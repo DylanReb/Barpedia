@@ -21,6 +21,8 @@ import styles from "./components/StyleFiles/BarPageStyle.js";
 
 const { Navigator, Screen } = createStackNavigator();
 
+console.disableYellowBox = true;
+
 export default function App() {
   return (
       <NavigationContainer>
