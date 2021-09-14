@@ -6,6 +6,11 @@ const styles = StyleSheet.create({
     container: {
       flex: 1,
     },
+    button_container: {
+      flex: 1,
+      height: 50,
+      width: 50,
+    },
     loader: {
       flex: 1,
       justifyContent: "center",
@@ -24,7 +29,8 @@ const styles = StyleSheet.create({
     },
     comments: {
       alignItems: "center",
-      padding: 5
+      padding: 5,
+
     }
   });
   

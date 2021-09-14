@@ -7,18 +7,18 @@ import {
   FlatList,
   Image,
   ScrollView,
-  AsyncStorage,
 } from "react-native";
 
 import DraggableFlatList from "react-native-draggable-flatlist";
-//import AsyncStorage from '@react-native-async-storage/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import styles from "./StyleFiles/BarMenuClassStyle";
 import picture_linker from "./PictureLinkers/picture_linker";
 import BarCard from "./BarCard.js";
-import logo from "../assets/Barpedia_logo.png";
+import logo from "../assets/Barpedia_logo_2.png";
 import bars from "../data/bars.json";
 
+const IGURL = "https://www.instagram.com/barpedia_psu/";
 
 export default class App extends React.Component {
   constructor(props) {
@@ -60,6 +60,7 @@ export default class App extends React.Component {
 
   componentDidMount() {
     console.log("MOUNTING")
+    //this.storeData(this.state.data)
     this.getData()
     this._unsubscribe = this.props.navigation.addListener('focus', () => {
       this.refreshData();
@@ -107,23 +108,49 @@ export default class App extends React.Component {
   getData = async () => {
     console.log("getting")
     try {
+      console.log("Get begin")
       var jsonValue = await AsyncStorage.getItem('@storage_Key')
       jsonValue = JSON.parse(jsonValue)
       console.log("RETURNING", jsonValue)
-      this.setState({ data: jsonValue })
-      //return jsonValue != null ? JSON.parse(jsonValue) : null;
+      if (jsonValue !== null) {
+        this.setState({ data: jsonValue })
+      } else {
+        this.setState({ data: bars })
+      }
+        //return jsonValue != null ? JSON.parse(jsonValue) : null;
     } catch(e) {
        console.log("error", e)
     }
   }
 
+  removeValue = async () => {
+    try {
+      await AsyncStorage.removeItem('@storage_Key')
+    } catch(e) {
+      // remove error
+    }
   
+    console.log('Done.')
+  }
+
   dragEnd(data) {
     var test = [];
     this.state.data = this.setState({ data });
     this.storeData(data);
 
   }
+
+  footer = () => {
+    return (
+      <>  
+        <Image style={styles.logo} source={logo}></Image>
+        <View style={styles.comments}>
+          <Text>Feedback? Email us at barpediaapp@gmail.com</Text>
+        </View>
+      </>
+    );
+  };
+
 
   render() {
     if (this.state.loading) {
@@ -145,6 +172,7 @@ export default class App extends React.Component {
             keyExtractor={(item) => item.id.toString()}
             scrollPercent={10}
             onDragEnd={({ data }) => this.dragEnd(data)}
+            ListFooterComponent={this.footer}
           />
         </View>
     );
