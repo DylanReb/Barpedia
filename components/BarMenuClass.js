@@ -6,7 +6,8 @@ import {
   ImageBackground,
   FlatList,
   Image,
-  ScrollView,
+  Modal,
+  Pressable,
 } from "react-native";
 
 import DraggableFlatList from "react-native-draggable-flatlist";
@@ -16,6 +17,9 @@ import styles from "./StyleFiles/BarMenuClassStyle";
 import picture_linker from "./PictureLinkers/picture_linker";
 import BarCard from "./BarCard.js";
 import logo from "../assets/Barpedia_logo_2.png";
+import demo1 from "../assets/favorite_demo_1.png";
+import demo2 from "../assets/favorite_demo_2.png";
+import demo3 from "../assets/favorite_demo_3.png";
 import bars from "../data/bars.json";
 
 const IGURL = "https://www.instagram.com/barpedia_psu/";
@@ -28,25 +32,11 @@ export default class App extends React.Component {
       data: bars,
       fetched: [],
       refresh: 0,
-      data_example: [
-        {
-         "_id": "612a628d8100e56d708ae7c5",
-         "id": 12,
-         "name": "Jax",
-         "pic_name": "Jax",
-       },
-       {
-         "_id": "612bec591225f0849f5c3e08",
-         "id": 13,
-         "name": "Stagewest",
-         "pic_name": "Stagewest",
-       },
-     ]
+      modal_visible: true
     };
   }
 
   refreshData() {
-    console.log("refreshing")
     fetch("https://barpedia.herokuapp.com/api/bars/")
       .then((response) => response.json())
       .then((responseData) => {
@@ -59,9 +49,8 @@ export default class App extends React.Component {
   }
 
   componentDidMount() {
-    console.log("MOUNTING")
-    //this.storeData(this.state.data)
-    this.getData()
+    this.getModal()
+    this.getFavorites()
     this._unsubscribe = this.props.navigation.addListener('focus', () => {
       this.refreshData();
     });
@@ -94,9 +83,8 @@ export default class App extends React.Component {
     )  
   }
 
-  storeData = async (value) => {
+  storeFavorites = async (value) => {
     try {
-      console.log("STORING", value);
       const jsonValue = JSON.stringify(value)
       await AsyncStorage.setItem('@storage_Key', jsonValue)
     } catch (e) {
@@ -105,13 +93,10 @@ export default class App extends React.Component {
   }
 
   
-  getData = async () => {
-    console.log("getting")
+  getFavorites = async () => {
     try {
-      console.log("Get begin")
       var jsonValue = await AsyncStorage.getItem('@storage_Key')
       jsonValue = JSON.parse(jsonValue)
-      console.log("RETURNING", jsonValue)
       if (jsonValue !== null) {
         this.setState({ data: jsonValue })
       } else {
@@ -123,9 +108,46 @@ export default class App extends React.Component {
     }
   }
 
-  removeValue = async () => {
+  removeFavorites = async () => {
     try {
       await AsyncStorage.removeItem('@storage_Key')
+    } catch(e) {
+      // remove error
+    }
+  
+    console.log('Done.')
+  }
+
+  storeModal = async (value) => {
+    console.log("STORING MODAl")
+    try {
+      this.setState({ modal_visible: false })
+      await AsyncStorage.setItem('@modal', JSON.stringify({"value":"false"}))
+    } catch (e) {
+      console.log("error", e)
+      // saving error
+    }
+  }
+
+  getModal = async () => {
+    console.log("GETTING MODAL")
+    try {
+      var modal = await AsyncStorage.getItem('@modal')
+      console.log(modal)
+      if (modal !== null) {
+        this.setState({ modal_visible: false })
+      } else {
+        this.setState({ modal_visible: true })
+      }
+        //return jsonValue != null ? JSON.parse(jsonValue) : null;
+    } catch(e) {
+       console.log("error", e)
+    }
+  }
+
+  removeModal = async () => {
+    try {
+      await AsyncStorage.removeItem('@modal')
     } catch(e) {
       // remove error
     }
@@ -136,7 +158,7 @@ export default class App extends React.Component {
   dragEnd(data) {
     var test = [];
     this.state.data = this.setState({ data });
-    this.storeData(data);
+    this.storeFavorites(data);
 
   }
 
@@ -159,20 +181,36 @@ export default class App extends React.Component {
           <ActivityIndicator size="large" color="#0c9" />
         </View>
       );
-    } 
-    console.log("HERERERE")
-    //console.log(this.state.data)
-    //console.log(this.getData());
-    console.log(this.state.data)
-    return (
+    }
+    console.log("HGERERE")
+    return ( 
         <View style={styles.container}>
+          <Modal
+            visible={this.state.modal_visible}
+            onRequestClose={() => {
+              this.setState({ modal_visible: false })
+            }}
+          >
+            <View style={styles.modal}>
+              <Text style={styles.modal_title}>Press and hold on a bar to be able to drag and drop it in desired spot</Text>
+              <Image style={styles.demo} source={demo2}></Image>
+              <Pressable
+                  style={styles.button}
+                  onPress={() => this.storeModal(false)}
+                >
+                  <Text style={styles.textStyle}>Close Favorites Demo</Text>
+              </Pressable>
+            </View>
+          </Modal>
           <DraggableFlatList
             data={this.state.data}
             renderItem={this.renderItem}
             keyExtractor={(item) => item.id.toString()}
             scrollPercent={10}
+            autoscrollSpeed={125}
             onDragEnd={({ data }) => this.dragEnd(data)}
             ListFooterComponent={this.footer}
+            extraData={this.state.fetched}
           />
         </View>
     );
