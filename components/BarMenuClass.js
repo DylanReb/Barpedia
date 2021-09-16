@@ -119,7 +119,6 @@ export default class App extends React.Component {
   }
 
   storeModal = async (value) => {
-    console.log("STORING MODAl")
     try {
       this.setState({ modal_visible: false })
       await AsyncStorage.setItem('@modal', JSON.stringify({"value":"false"}))
@@ -130,10 +129,8 @@ export default class App extends React.Component {
   }
 
   getModal = async () => {
-    console.log("GETTING MODAL")
     try {
       var modal = await AsyncStorage.getItem('@modal')
-      console.log(modal)
       if (modal !== null) {
         this.setState({ modal_visible: false })
       } else {
@@ -182,7 +179,6 @@ export default class App extends React.Component {
         </View>
       );
     }
-    console.log("HGERERE")
     return ( 
         <View style={styles.container}>
           <Modal
